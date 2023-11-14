@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/angelSantori/expressSQL/issues"
   },
-  "homepage": "https://github.com/angelSantori/expressSQL#readme"
+  "homepage": "https://github.com/angelSantori/expressSQL#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
