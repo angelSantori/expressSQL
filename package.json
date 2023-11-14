@@ -1,0 +1,23 @@
+{
+  "name": "expresssql",
+  "version": "1.0.0",
+  "description": "Utilización de express y microsoft sql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angelSantori/expressSQL.git"
+  },
+  "keywords": [
+    "npm",
+    "nodejs"
+  ],
+  "author": "Manuel Antonio Campa Martínez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angelSantori/expressSQL/issues"
+  },
+  "homepage": "https://github.com/angelSantori/expressSQL#readme"
+}
