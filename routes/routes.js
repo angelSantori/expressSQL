@@ -72,7 +72,32 @@ const router = app => {
     //     "userEmail": "jorge@email.com",
     //     "userPass": "contraseña"
     // }
+
+    // Actualizar un usuario existente
+    app.put('/users/:id', async (request, response) => {
+        try {
+            const id = request.params.id;
+            const newUser = request.body;
+
+            const pool = await sql.connect('./data/config');
+
+            const result = await pool
+                .request()
+                .input('idusers', sql.Int, id)
+                .input('userNombre', sql.VarChar(45), newUser.userNombre)
+                .input('userEdad', sql.Int, newUser.userEdad)
+                .input('userEmail', sql.VarChar(320), newUser.userEmail)
+                .input('userPass', sql.VarChar(128), newUser.userPass)
+                .query('UPDATE users SET userNombre = @userNombre, userEdad = @userEdad, userEmail = @userEmail, userPass = @userPass WHERE idusers = @idusers');
+
+            response.send('User updated successfully');
+        } catch (error) {
+            console.error(error);
+            response.status(500).send('Error de servidor');
+        }
+    });
     
+
 }
 
 //Exportar el router
