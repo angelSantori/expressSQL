@@ -21,15 +21,17 @@ const router = app => {
         }
     });
 
-    //Mostrar un solo usuario por ID
+    // Mostrar un solo usuario por ID
     app.get('/users/:id', async (request, response) => {
         const id = request.params.id;
 
         try {
             const pool = await sql.connect('./data/config'); // Asegúrate de tener sqlConfig definido
-            const result = await pool.request().query('SELECT * FROM users WHERE idusers = @id', {
-                id: id
-            });
+            const result = await pool
+                .request()
+                .input('id', sql.Int, id) // Declarar el parámetro @id
+                .query('SELECT * FROM users WHERE idusers = @id');
+            
             response.send(result.recordset);
         } catch (error) {
             console.error(error);
