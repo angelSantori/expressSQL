@@ -64,6 +64,14 @@ const router = app => {
             response.status(500).send('Error de servidor');
         }
     });
+
+    // Ejemplo de petición POST
+    // {
+    //     "userNombre": "jorge",
+    //     "userEdad": 33,
+    //     "userEmail": "jorge@email.com",
+    //     "userPass": "contraseña"
+    // }
     
 }
 
