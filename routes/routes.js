@@ -218,6 +218,108 @@ const router = app => {
     });
     //-----------------------------------------------------------------------------------------------------------------------/Productos
 
+    //-----------------------------------------------------------------------------------------------------------------------Ventas
+    //Mostrar todas las ventas
+    app.get('/ventas', async (request, response) => {
+        try {
+            const pool = await sql.connect('./data/config');
+            const result = await pool.request().query('SELECT * FROM ventas');
+            response.send(result.recordset);
+        } catch (error) {
+            console.error(error);
+            response.status(500).send('Error de servidor');
+        }
+    });
+
+    // Mostrar una sola venta por ID
+    app.get('/ventas/:id', async (request, response) => {
+        const id = request.params.id;
+
+        try {
+            const pool = await sql.connect('./data/config');
+            const result = await pool
+                .request()
+                .input('id', sql.Int, id) // Declarar el parámetro @id
+                .query('SELECT * FROM ventas WHERE idventa = @id');
+            
+            response.send(result.recordset);
+        } catch (error) {
+            console.error(error);
+            response.status(500).send('Error de servidor');
+        }
+    });
+
+    //Agregar un nuevo usuario
+    app.post('/ventas', async (request, response) => {
+        const newVenta = request.body;
+
+        try {
+            const pool = await sql.connect('./data/config');
+
+            const request = pool.request();
+            
+            // Asignar parámetros individualmente
+            request.input('idusers', sql.Int, newVenta.idusers);
+            request.input('idproduct', sql.Int, newVenta.idproduct);
+            request.input('ventaTotal', sql.Float, newVenta.ventaTotal);
+            request.input('ventaTipoPago', sql.VarChar(45), newVenta.ventaTipoPago);            
+            
+            const result = await request.query('INSERT INTO ventas (idusers, idproduct, ventaTotal, ventaTipoPago) OUTPUT INSERTED.idventa VALUES (@idusers, @idproduct, @ventaTotal, @ventaTipoPago)');
+
+            const insertId = result.recordset[0].idventa;
+
+            response.status(201).send(`Venta added with ID: ${insertId}`);
+        } catch (error) {
+            console.error(error);
+            response.status(500).send('Error de servidor');
+        }
+    });
+
+    // Actualizar una venta existente
+    app.put('/ventas/:id', async (request, response) => {
+        try {
+            const id = request.params.id;
+            const newVenta = request.body;
+
+            const pool = await sql.connect('./data/config');
+
+            const result = await pool
+                .request()
+                .input('idventa', sql.Int, id)
+                .input('idusers', sql.Int, newVenta.idusers)
+                .input('idproduct', sql.Int, newVenta.idproduct)
+                .input('ventaTotal', sql.Float, newVenta.ventaTotal)
+                .input('ventaTipoPago', sql.VarChar(45), newVenta.ventaTipoPago)
+
+                .query('UPDATE ventas SET idusers = @idusers, idproduct = @idproduct, ventaTotal = @ventaTotal, ventaTipoPago = @ventaTipoPago WHERE idventa = @idventa');
+
+            response.send('Venta updated successfully');
+        } catch (error) {
+            console.error(error);
+            response.status(500).send('Error de servidor');
+        }
+    });
+
+    // Eliminar un producto
+    app.delete('/ventas/:id', async (request, response) => {
+        const id = request.params.id;
+
+        try {
+            const pool = await sql.connect('./data/config');
+
+            const result = await pool
+                .request()
+                .input('id', sql.Int, id)
+                .query('DELETE FROM ventas WHERE idventa = @id');
+
+            response.send('Venta deleted');
+        } catch (error) {
+            console.error(error);
+            response.status(500).send('Error de servidor');
+        }
+    });
+    //-----------------------------------------------------------------------------------------------------------------------/Ventas
+
 }
 
 //Exportar el router
